@@ -25,7 +25,7 @@ $ trivy fs --format cyclonedx --output result.json /app/myproject
 ```
 {
   "bomFormat": "CycloneDX",
-  "specVersion": "1.3",
+  "specVersion": "1.6",
   "serialNumber": "urn:uuid:2be5773d-7cd3-4b4b-90a5-e165474ddace",
   "version": 1,
   "metadata": {
@@ -195,6 +195,9 @@ Note that XML format is not supported at the moment.
 
 You can use the regular subcommands (like `image`, `fs` and `rootfs`) and specify `cyclonedx` with the `--format` option.
 
+Trivy generates CycloneDX 1.6 by default. Use `--cyclonedx-version 1.7` when the
+consumer supports CycloneDX 1.7.
+
 CycloneDX can represent either or both SBOM or BOV.
 
 - [Software Bill of Materials (SBOM)][sbom]
@@ -207,6 +210,30 @@ $ trivy image --format cyclonedx --output result.json alpine:3.15
 2022-07-19T07:47:27.624Z        INFO    "--format cyclonedx" disables security scanning. Specify "--scanners vuln" explicitly if you want to include vulnerabilities in the CycloneDX report.
 ```
 
+Every component is included in the `dependencies` graph, including components without
+dependencies of their own. Licenses discovered by the license scanner are merged into the
+corresponding package component.
+
+#### License policy filtering
+Use `--license-policy` to exclude components from a CycloneDX SBOM by license category or
+license expression. Multiple values can be separated by commas or by repeating the flag.
+
+```shell
+# Exclude packages with forbidden or restricted licenses
+$ trivy image --format cyclonedx --license-policy forbidden,restricted \
+    --output result.cdx alpine:3.20
+
+# Exclude specific licenses or expressions
+$ trivy image --format cyclonedx --license-policy AGPL-3.0-only,"MIT AND GPL-3.0-only" \
+    --output result.cdx alpine:3.20
+```
+
+The categories are `forbidden`, `restricted`, `reciprocal`, `notice`, `permissive`,
+`unencumbered`, and `unknown`. A package is excluded when any of its licenses matches the
+policy. The `unknown` category also matches packages without a detected license. Container,
+filesystem, operating system, and application components that describe the target itself are
+always retained.
+
 <details>
 <summary>Result</summary>
 
@@ -214,7 +241,7 @@ $ trivy image --format cyclonedx --output result.json alpine:3.15
 $ cat result.json | jq .
 {
   "bomFormat": "CycloneDX",
-  "specVersion": "1.5",
+  "specVersion": "1.6",
   "serialNumber": "urn:uuid:2be5773d-7cd3-4b4b-90a5-e165474ddace",
   "version": 1,
   "metadata": {

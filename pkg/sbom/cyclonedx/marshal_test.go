@@ -7,6 +7,7 @@ import (
 	cdx "github.com/CycloneDX/cyclonedx-go"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/package-url/packageurl-go"
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/aquasecurity/trivy/pkg/clock"
 	"github.com/aquasecurity/trivy/pkg/digest"
 	ftypes "github.com/aquasecurity/trivy/pkg/fanal/types"
+	"github.com/aquasecurity/trivy/pkg/licensing"
 	"github.com/aquasecurity/trivy/pkg/report"
 	"github.com/aquasecurity/trivy/pkg/sbom/core"
 	"github.com/aquasecurity/trivy/pkg/sbom/cyclonedx"
@@ -337,10 +339,10 @@ func TestMarshaler_MarshalReport(t *testing.T) {
 				},
 			},
 			want: &cdx.BOM{
-				XMLNS:        "http://cyclonedx.org/schema/bom/1.7",
+				XMLNS:        "http://cyclonedx.org/schema/bom/1.6",
 				BOMFormat:    "CycloneDX",
-				SpecVersion:  cdx.SpecVersion1_7,
-				JSONSchema:   "http://cyclonedx.org/schema/bom-1.7.schema.json",
+				SpecVersion:  cdx.SpecVersion1_6,
+				JSONSchema:   "http://cyclonedx.org/schema/bom-1.6.schema.json",
 				SerialNumber: "urn:uuid:3ff14136-e09f-4df9-80ea-000000000014",
 				Version:      1,
 				Metadata: &cdx.Metadata{
@@ -988,10 +990,10 @@ func TestMarshaler_MarshalReport(t *testing.T) {
 				},
 			},
 			want: &cdx.BOM{
-				XMLNS:        "http://cyclonedx.org/schema/bom/1.7",
+				XMLNS:        "http://cyclonedx.org/schema/bom/1.6",
 				BOMFormat:    "CycloneDX",
-				SpecVersion:  cdx.SpecVersion1_7,
-				JSONSchema:   "http://cyclonedx.org/schema/bom-1.7.schema.json",
+				SpecVersion:  cdx.SpecVersion1_6,
+				JSONSchema:   "http://cyclonedx.org/schema/bom-1.6.schema.json",
 				SerialNumber: "urn:uuid:3ff14136-e09f-4df9-80ea-000000000007",
 				Version:      1,
 				Metadata: &cdx.Metadata{
@@ -1384,10 +1386,10 @@ func TestMarshaler_MarshalReport(t *testing.T) {
 				},
 			},
 			want: &cdx.BOM{
-				XMLNS:        "http://cyclonedx.org/schema/bom/1.7",
+				XMLNS:        "http://cyclonedx.org/schema/bom/1.6",
 				BOMFormat:    "CycloneDX",
-				SpecVersion:  cdx.SpecVersion1_7,
-				JSONSchema:   "http://cyclonedx.org/schema/bom-1.7.schema.json",
+				SpecVersion:  cdx.SpecVersion1_6,
+				JSONSchema:   "http://cyclonedx.org/schema/bom-1.6.schema.json",
 				SerialNumber: "urn:uuid:3ff14136-e09f-4df9-80ea-000000000007",
 				Version:      1,
 				Metadata: &cdx.Metadata{
@@ -1616,10 +1618,10 @@ func TestMarshaler_MarshalReport(t *testing.T) {
 				BOM: testSBOM(),
 			},
 			want: &cdx.BOM{
-				XMLNS:        "http://cyclonedx.org/schema/bom/1.7",
+				XMLNS:        "http://cyclonedx.org/schema/bom/1.6",
 				BOMFormat:    "CycloneDX",
-				SpecVersion:  cdx.SpecVersion1_7,
-				JSONSchema:   "http://cyclonedx.org/schema/bom-1.7.schema.json",
+				SpecVersion:  cdx.SpecVersion1_6,
+				JSONSchema:   "http://cyclonedx.org/schema/bom-1.6.schema.json",
 				SerialNumber: "urn:uuid:3ff14136-e09f-4df9-80ea-000000000001",
 				Version:      1,
 				Metadata: &cdx.Metadata{
@@ -1884,10 +1886,10 @@ func TestMarshaler_MarshalReport(t *testing.T) {
 				},
 			},
 			want: &cdx.BOM{
-				XMLNS:        "http://cyclonedx.org/schema/bom/1.7",
+				XMLNS:        "http://cyclonedx.org/schema/bom/1.6",
 				BOMFormat:    "CycloneDX",
-				SpecVersion:  cdx.SpecVersion1_7,
-				JSONSchema:   "http://cyclonedx.org/schema/bom-1.7.schema.json",
+				SpecVersion:  cdx.SpecVersion1_6,
+				JSONSchema:   "http://cyclonedx.org/schema/bom-1.6.schema.json",
 				SerialNumber: "urn:uuid:3ff14136-e09f-4df9-80ea-000000000004",
 				Version:      1,
 				Metadata: &cdx.Metadata{
@@ -2074,10 +2076,10 @@ func TestMarshaler_MarshalReport(t *testing.T) {
 				},
 			},
 			want: &cdx.BOM{
-				XMLNS:        "http://cyclonedx.org/schema/bom/1.7",
+				XMLNS:        "http://cyclonedx.org/schema/bom/1.6",
 				BOMFormat:    "CycloneDX",
-				SpecVersion:  cdx.SpecVersion1_7,
-				JSONSchema:   "http://cyclonedx.org/schema/bom-1.7.schema.json",
+				SpecVersion:  cdx.SpecVersion1_6,
+				JSONSchema:   "http://cyclonedx.org/schema/bom-1.6.schema.json",
 				SerialNumber: "urn:uuid:3ff14136-e09f-4df9-80ea-000000000003",
 				Version:      1,
 				Metadata: &cdx.Metadata{
@@ -2165,10 +2167,10 @@ func TestMarshaler_MarshalReport(t *testing.T) {
 				Results:       types.Results{},
 			},
 			want: &cdx.BOM{
-				XMLNS:        "http://cyclonedx.org/schema/bom/1.7",
+				XMLNS:        "http://cyclonedx.org/schema/bom/1.6",
 				BOMFormat:    "CycloneDX",
-				SpecVersion:  cdx.SpecVersion1_7,
-				JSONSchema:   "http://cyclonedx.org/schema/bom-1.7.schema.json",
+				SpecVersion:  cdx.SpecVersion1_6,
+				JSONSchema:   "http://cyclonedx.org/schema/bom-1.6.schema.json",
 				SerialNumber: "urn:uuid:3ff14136-e09f-4df9-80ea-000000000002",
 				Version:      1,
 				Metadata: &cdx.Metadata{
@@ -2218,10 +2220,10 @@ func TestMarshaler_MarshalReport(t *testing.T) {
 				BOM:           testSBOMWithoutRoot(),
 			},
 			want: &cdx.BOM{
-				XMLNS:        "http://cyclonedx.org/schema/bom/1.7",
+				XMLNS:        "http://cyclonedx.org/schema/bom/1.6",
 				BOMFormat:    "CycloneDX",
-				SpecVersion:  cdx.SpecVersion1_7,
-				JSONSchema:   "http://cyclonedx.org/schema/bom-1.7.schema.json",
+				SpecVersion:  cdx.SpecVersion1_6,
+				JSONSchema:   "http://cyclonedx.org/schema/bom-1.6.schema.json",
 				SerialNumber: "urn:uuid:3ff14136-e09f-4df9-80ea-000000000001",
 				Version:      1,
 				Metadata: &cdx.Metadata{
@@ -2481,4 +2483,102 @@ func TestMarshaler_Licenses(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 		})
 	}
+}
+
+func TestMarshaler_LicensePolicy(t *testing.T) {
+	root := &core.Component{
+		Root: true,
+		Type: core.TypeContainerImage,
+		Name: "example:latest",
+		PkgIdentifier: ftypes.PkgIdentifier{
+			BOMRef: "root",
+		},
+	}
+	osComponent := &core.Component{
+		Type: core.TypeOS,
+		Name: "alpine",
+		PkgIdentifier: ftypes.PkgIdentifier{
+			BOMRef: "os",
+		},
+	}
+	allowed := &core.Component{
+		Type:     core.TypeLibrary,
+		Name:     "allowed",
+		Version:  "1.0.0",
+		Licenses: []string{"MIT"},
+		PkgIdentifier: ftypes.PkgIdentifier{
+			BOMRef: "pkg:npm/allowed@1.0.0",
+		},
+	}
+	denied := &core.Component{
+		Type:     core.TypeLibrary,
+		Name:     "denied",
+		Version:  "1.0.0",
+		Licenses: []string{"AGPL-3.0-only"},
+		PkgIdentifier: ftypes.PkgIdentifier{
+			BOMRef: "pkg:npm/denied@1.0.0",
+		},
+	}
+	nested := &core.Component{
+		Type:     core.TypeLibrary,
+		Name:     "nested",
+		Version:  "1.0.0",
+		Licenses: []string{"Apache-2.0"},
+		PkgIdentifier: ftypes.PkgIdentifier{
+			BOMRef: "pkg:npm/nested@1.0.0",
+		},
+	}
+
+	bom := core.NewBOM(core.Options{GenerateBOMRef: true})
+	bom.AddComponent(root)
+	bom.AddComponent(osComponent)
+	bom.AddComponent(allowed)
+	bom.AddComponent(denied)
+	bom.AddComponent(nested)
+	bom.AddRelationship(root, osComponent, core.RelationshipContains)
+	bom.AddRelationship(osComponent, allowed, core.RelationshipContains)
+	bom.AddRelationship(osComponent, denied, core.RelationshipContains)
+	bom.AddRelationship(denied, nested, core.RelationshipDependsOn)
+	bom.AddRelationship(allowed, nil, core.RelationshipDependsOn)
+
+	policy := licensing.NewPolicy([]string{"forbidden"}, map[ftypes.LicenseCategory][]string{
+		ftypes.CategoryForbidden: {"AGPL-3.0-only"},
+	})
+	marshaler := cyclonedx.NewMarshaler("dev", cyclonedx.WithLicensePolicy(policy))
+	got, err := marshaler.Marshal(t.Context(), bom)
+	require.NoError(t, err)
+
+	assert.Equal(t, cdx.SpecVersion1_6, got.SpecVersion)
+	require.NotNil(t, got.Components)
+	assert.Equal(t, []string{
+		"os",
+		"pkg:npm/allowed@1.0.0",
+		"pkg:npm/nested@1.0.0",
+	}, lo.Map(*got.Components, func(component cdx.Component, _ int) string {
+		return component.BOMRef
+	}))
+
+	require.NotNil(t, got.Dependencies)
+	componentRefs := lo.SliceToMap(*got.Components, func(component cdx.Component) (string, struct{}) {
+		return component.BOMRef, struct{}{}
+	})
+	componentRefs["os"] = struct{}{}
+	componentRefs["root"] = struct{}{}
+	for _, dependency := range *got.Dependencies {
+		assert.Contains(t, componentRefs, dependency.Ref)
+		for _, ref := range *dependency.Dependencies {
+			assert.Contains(t, componentRefs, ref)
+		}
+	}
+
+	// Every component, including the removed component's dependency, remains in the graph.
+	dependencyRefs := lo.SliceToMap(*got.Dependencies, func(dependency cdx.Dependency) (string, struct{}) {
+		return dependency.Ref, struct{}{}
+	})
+	assert.ElementsMatch(t, []string{
+		"pkg:npm/allowed@1.0.0",
+		"pkg:npm/nested@1.0.0",
+		"os",
+		"root",
+	}, lo.Keys(dependencyRefs))
 }

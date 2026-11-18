@@ -21,6 +21,7 @@ trivy config [flags] DIR
       --config-check strings              specify the paths to the Rego check files or to the directories containing them, applying config files
       --config-data strings               specify paths from which data for the Rego checks will be recursively loaded
       --config-file-schemas strings       specify paths to JSON configuration file schemas to determine that a file matches some configuration and pass the schema to Rego checks for type checking
+      --cyclonedx-version string          CycloneDX specification version (default 1.6) (allowed values: 1.6,1.7)
       --disable-telemetry                 disable sending anonymous usage data to Aqua
       --enable-modules strings            [EXPERIMENTAL] module names to enable
       --exit-code int                     specify exit code when any security issues are found
@@ -49,6 +50,7 @@ trivy config [flags] DIR
       --include-deprecated-checks         include deprecated checks
       --include-non-failures              include successes, available with '--scanners misconfig'
       --k8s-version string                specify k8s version to validate outdated APIs against (example: 1.21.0)
+      --license-policy strings            exclude components with the specified license categories or licenses from CycloneDX SBOMs (e.g. forbidden,restricted,GPL-3.0-only)
       --misconfig-scanners strings        comma-separated list of misconfig scanners to use for misconfiguration scanning (default [azure-arm,cloudformation,dockerfile,helm,kubernetes,terraform,terraformplan-json,terraformplan-snapshot,ansible])
       --module-dir string                 specify the directory of the WASM modules to load (default "$HOME/.trivy/modules")
   -o, --output string                     output file name

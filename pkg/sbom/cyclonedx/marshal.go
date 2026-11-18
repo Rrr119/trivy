@@ -40,18 +40,41 @@ const (
 )
 
 type Marshaler struct {
-	appVersion   string // Trivy version
-	bom          *core.BOM
-	componentIDs map[uuid.UUID]string
+	appVersion    string // Trivy version
+	specVersion   cdx.SpecVersion
+	licensePolicy licensing.Policy
+	bom           *core.BOM
+	componentIDs  map[uuid.UUID]string
 
 	logger *log.Logger
 }
 
-func NewMarshaler(version string) Marshaler {
-	return Marshaler{
-		appVersion: version,
-		logger:     log.WithPrefix(log.PrefixCycloneDX),
+type MarshalerOption func(*Marshaler)
+
+// WithSpecVersion sets the CycloneDX specification version of the generated BOM.
+func WithSpecVersion(version cdx.SpecVersion) MarshalerOption {
+	return func(m *Marshaler) {
+		m.specVersion = version
 	}
+}
+
+// WithLicensePolicy excludes components that match the license policy.
+func WithLicensePolicy(policy licensing.Policy) MarshalerOption {
+	return func(m *Marshaler) {
+		m.licensePolicy = policy
+	}
+}
+
+func NewMarshaler(version string, opts ...MarshalerOption) Marshaler {
+	m := Marshaler{
+		appVersion:  version,
+		specVersion: cdx.SpecVersion1_6,
+		logger:      log.WithPrefix(log.PrefixCycloneDX),
+	}
+	for _, opt := range opts {
+		opt(&m)
+	}
+	return m
 }
 
 // MarshalReport converts the Trivy report to the CycloneDX format
@@ -68,9 +91,17 @@ func (m *Marshaler) MarshalReport(ctx context.Context, report types.Report) (*cd
 // Marshal converts the Trivy component to the CycloneDX format
 func (m *Marshaler) Marshal(ctx context.Context, bom *core.BOM) (*cdx.BOM, error) {
 	m.bom = bom
+	if !m.licensePolicy.Empty() {
+		// Filtering mutates the graph, so keep the caller's BOM intact.
+		m.bom = bom.Clone()
+		m.applyLicensePolicy()
+	}
 	m.componentIDs = make(map[uuid.UUID]string, len(m.bom.Components()))
 
 	cdxBOM := cdx.NewBOM()
+	if err := m.setSpecVersion(cdxBOM); err != nil {
+		return nil, err
+	}
 	cdxBOM.SerialNumber = uuid.New().URN()
 	cdxBOM.Metadata = m.Metadata(ctx)
 
@@ -87,6 +118,37 @@ func (m *Marshaler) Marshal(ctx context.Context, bom *core.BOM) (*cdx.BOM, error
 	cdxBOM.Vulnerabilities = m.marshalVulnerabilities()
 
 	return cdxBOM, nil
+}
+
+func (m *Marshaler) setSpecVersion(bom *cdx.BOM) error {
+	switch m.specVersion {
+	case cdx.SpecVersion1_6:
+		bom.SpecVersion = cdx.SpecVersion1_6
+		bom.JSONSchema = "http://cyclonedx.org/schema/bom-1.6.schema.json"
+		bom.XMLNS = "http://cyclonedx.org/schema/bom/1.6"
+	case cdx.SpecVersion1_7:
+		bom.SpecVersion = cdx.SpecVersion1_7
+		bom.JSONSchema = "http://cyclonedx.org/schema/bom-1.7.schema.json"
+		bom.XMLNS = "http://cyclonedx.org/schema/bom/1.7"
+	default:
+		return xerrors.Errorf("unsupported CycloneDX specification version: %d", m.specVersion)
+	}
+	return nil
+}
+
+func (m *Marshaler) applyLicensePolicy() {
+	removed := make(map[uuid.UUID]struct{})
+	for id, component := range m.bom.Components() {
+		// Metadata and OS/application components describe the target itself and its
+		// containers. License policy applies to the software packages in the inventory.
+		if component.Root || component.Type != core.TypeLibrary {
+			continue
+		}
+		if m.licensePolicy.Excludes(component.Licenses) {
+			removed[id] = struct{}{}
+		}
+	}
+	m.bom.RemoveComponents(removed)
 }
 
 func (m *Marshaler) Metadata(ctx context.Context) *cdx.Metadata {
@@ -169,40 +231,61 @@ func (m *Marshaler) marshalComponents() (*[]cdx.Component, error) {
 }
 
 func (m *Marshaler) marshalDependencies() *[]cdx.Dependency {
-	var dependencies []cdx.Dependency
+	dependencies := make(map[string]map[string]struct{})
+
+	// Every component must be present in the dependency graph, even when it has no
+	// dependencies of its own. Otherwise validators cannot tell "no dependencies" from
+	// "dependency information is missing".
+	for _, component := range m.bom.Components() {
+		if ref, ok := m.componentIDs[component.ID()]; ok {
+			m.addDependency(dependencies, ref)
+		}
+	}
+
 	for key, rels := range m.bom.Relationships() {
 		ref, ok := m.componentIDs[key]
 		if !ok {
 			continue
 		}
 
-		deps := lo.FilterMap(rels, func(rel core.Relationship, _ int) (string, bool) {
-			d, ok := m.componentIDs[rel.Dependency]
-			return d, ok
-		})
-		sort.Strings(deps)
-
-		dependencies = append(dependencies, cdx.Dependency{
-			Ref:          ref,
-			Dependencies: &deps,
-		})
+		m.addDependency(dependencies, ref)
+		for _, rel := range rels {
+			if dependency, ok := m.componentIDs[rel.Dependency]; ok {
+				dependencies[ref][dependency] = struct{}{}
+			}
+		}
 	}
 
 	// A cryptographic asset depends on nothing, and CycloneDX tells that apart from unknown
 	// dependencies only by the component being declared as an empty element of the graph.
 	// https://cyclonedx.org/docs/1.7/json/#dependencies
 	for _, component := range m.bom.CryptoComponents() {
-		dependencies = append(dependencies, cdx.Dependency{
-			Ref:          component.BOMRef(),
-			Dependencies: &[]string{},
-		})
+		m.addDependency(dependencies, component.BOMRef())
 	}
 
-	// Sort dependencies by BOM-Ref
-	sort.Slice(dependencies, func(i, j int) bool {
-		return dependencies[i].Ref < dependencies[j].Ref
+	dependencyList := lo.MapToSlice(dependencies, func(ref string, deps map[string]struct{}) cdx.Dependency {
+		sorted := lo.Keys(deps)
+		sort.Strings(sorted)
+		return cdx.Dependency{
+			Ref:          ref,
+			Dependencies: &sorted,
+		}
 	})
-	return &dependencies
+
+	// Sort dependencies by BOM-Ref
+	sort.Slice(dependencyList, func(i, j int) bool {
+		return dependencyList[i].Ref < dependencyList[j].Ref
+	})
+	return &dependencyList
+}
+
+func (*Marshaler) addDependency(dependencies map[string]map[string]struct{}, ref string) {
+	if ref == "" {
+		return
+	}
+	if _, ok := dependencies[ref]; !ok {
+		dependencies[ref] = make(map[string]struct{})
+	}
 }
 
 func (m *Marshaler) marshalVulnerabilities() *[]cdx.Vulnerability {

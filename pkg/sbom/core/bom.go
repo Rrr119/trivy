@@ -377,6 +377,70 @@ func (b *BOM) AddRelationship(parent, child *Component, relationshipType Relatio
 	}
 }
 
+// RemoveComponents removes components from the BOM together with every reference to them.
+// Relationships pointing to a removed component are dropped, while a remaining parent with
+// no dependencies keeps an empty relationship entry so that CycloneDX still emits it.
+func (b *BOM) RemoveComponents(ids map[uuid.UUID]struct{}) {
+	if len(ids) == 0 {
+		return
+	}
+
+	for id := range ids {
+		delete(b.components, id)
+		delete(b.vulnerabilities, id)
+		delete(b.parents, id)
+		if b.rootID == id {
+			b.rootID = uuid.Nil
+		}
+	}
+
+	for parent, relationships := range b.relationships {
+		if _, removed := ids[parent]; removed {
+			delete(b.relationships, parent)
+			continue
+		}
+
+		kept := relationships[:0]
+		for _, relationship := range relationships {
+			if _, removed := ids[relationship.Dependency]; removed {
+				continue
+			}
+			kept = append(kept, relationship)
+		}
+		if len(kept) == 0 && len(relationships) > 0 {
+			b.relationships[parent] = nil
+			continue
+		}
+		b.relationships[parent] = kept
+	}
+
+	for parent, children := range b.parents {
+		filtered := children[:0]
+		for _, child := range children {
+			if _, removed := ids[child]; removed {
+				continue
+			}
+			filtered = append(filtered, child)
+		}
+		b.parents[parent] = filtered
+	}
+
+	for purl, componentIDs := range b.purls {
+		filtered := componentIDs[:0]
+		for _, componentID := range componentIDs {
+			if _, removed := ids[componentID]; removed {
+				continue
+			}
+			filtered = append(filtered, componentID)
+		}
+		if len(filtered) == 0 {
+			delete(b.purls, purl)
+			continue
+		}
+		b.purls[purl] = filtered
+	}
+}
+
 func (b *BOM) AddVulnerabilities(c *Component, vulns []Vulnerability) {
 	if c.id == uuid.Nil {
 		b.AddComponent(c)

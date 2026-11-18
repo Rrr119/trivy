@@ -94,7 +94,10 @@ func initWriter(output io.Writer, report types.Report, option flag.Options) (Wri
 		}, nil
 	case types.FormatCycloneDX:
 		// TODO: support xml format option with cyclonedx writer
-		return cyclonedx.NewWriter(output, option.AppVersion), nil
+		return cyclonedx.NewWriter(output, option.AppVersion,
+			cyclonedx.WithSpecVersion(option.CycloneDXVersion),
+			cyclonedx.WithLicensePolicy(option.LicensePolicy, option.LicenseCategories),
+		), nil
 	case types.FormatSPDX, types.FormatSPDXJSON:
 		return spdx.NewWriter(output, option.AppVersion, option.Format), nil
 	case types.FormatTemplate:

@@ -1,7 +1,7 @@
 {
-  "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
-  "specVersion": "1.7",
+  "specVersion": "1.6",
   "serialNumber": "urn:uuid:3ff14136-e09f-4df9-80ea-000000000002",
   "version": 1,
   "metadata": {
@@ -73,7 +73,6 @@
         "algorithmProperties": {
           "primitive": "signature",
           "parameterSetIdentifier": "2048-224",
-          "algorithmFamily": "DSA",
           "classicalSecurityLevel": 112,
           "nistQuantumSecurityLevel": 0
         },
@@ -96,7 +95,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "signature",
-          "algorithmFamily": "DSA",
           "nistQuantumSecurityLevel": 0
         },
         "oid": "1.2.840.10040.4.3"
@@ -126,7 +124,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "unknown",
-          "ellipticCurve": "nist/P-192",
           "classicalSecurityLevel": 80,
           "nistQuantumSecurityLevel": 0
         },
@@ -169,7 +166,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "unknown",
-          "ellipticCurve": "nist/P-256",
           "classicalSecurityLevel": 128,
           "nistQuantumSecurityLevel": 0
         },
@@ -192,7 +188,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "signature",
-          "algorithmFamily": "ECDSA",
           "nistQuantumSecurityLevel": 0
         },
         "oid": "1.2.840.10045.4.1"
@@ -226,7 +221,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "signature",
-          "algorithmFamily": "ECDSA",
           "nistQuantumSecurityLevel": 0
         },
         "oid": "1.2.840.10045.4.3.2"
@@ -300,7 +294,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "signature",
-          "algorithmFamily": "RSASSA-PKCS1",
           "nistQuantumSecurityLevel": 0
         },
         "oid": "1.2.840.113549.1.1.11"
@@ -444,7 +437,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "signature",
-          "algorithmFamily": "RSASSA-PKCS1",
           "nistQuantumSecurityLevel": 0
         },
         "oid": "1.2.840.113549.1.1.5"
@@ -510,7 +502,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "signature",
-          "algorithmFamily": "EdDSA",
           "classicalSecurityLevel": 128,
           "nistQuantumSecurityLevel": 0
         },
@@ -541,7 +532,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "signature",
-          "algorithmFamily": "EdDSA",
           "classicalSecurityLevel": 224,
           "nistQuantumSecurityLevel": 0
         },
@@ -564,7 +554,6 @@
         "assetType": "algorithm",
         "algorithmProperties": {
           "primitive": "signature",
-          "algorithmFamily": "ML-DSA",
           "nistQuantumSecurityLevel": 3
         },
         "oid": "2.16.840.1.101.3.4.3.18"
@@ -585,26 +574,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "b0f67a2d9ac93eb4",
           "subjectName": "CN=jks.trivy.test",
           "issuerName": "CN=jks.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "05e5176f1fc41ccab60e7cb609e21aeb147a24acf912a1f647a2219843481cbc"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.11"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:5a16df6acf68dac77c9535924698a01cc45e4eec765c0e95ddad1963c0124b20"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -623,32 +597,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "8",
           "subjectName": "CN=dsa-sha1.trivy.test",
           "issuerName": "CN=dsa-sha1.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "180a99e3955610eca08450110c1e840748bad3445864a0c548f0ecf3f326691e"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.10040.4.3"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:f6548419aaf2c795a631b2a1de87bf347f49b09a48865f2e803310a41df66026"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -667,32 +620,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "c",
           "subjectName": "CN=ed448.trivy.test",
           "issuerName": "CN=ed448.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "1c9de6711c0ada6a2c75dc20895e4220303a849e02e826a195b1369e35bcee64"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.3.101.113"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:7741a6bd8599abd9daee9eff656050a4d9baab43b822c5ee163ab224510ec9af"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -723,32 +655,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "2",
           "subjectName": "CN=ec.trivy.test",
           "issuerName": "CN=ec.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "7a37295458a2474c5fa6871649fafc2d29d825c0a718286e589692f1a8493861"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.10045.4.3.2"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:a9a6c62b03c6d94ba1a3e0d06d0ea119c25d3523759cb10d487df50689075251"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -767,32 +678,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "e",
           "subjectName": "CN=rsa-pss-sha256.trivy.test",
           "issuerName": "CN=rsa-pss-sha256.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "aa58a804b374d09465956db6e545e58976ae16ddc0449d091ee9f4bc63b814d4"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.10"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:9effb00691ec209a852669d85442db8beaca2e68e6e976ba63817a971cf77eee"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -823,32 +713,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "7",
           "subjectName": "CN=weak.trivy.test",
           "issuerName": "CN=weak.trivy.test",
           "notValidBefore": "2019-01-01T00:00:00+00:00",
           "notValidAfter": "2020-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "afa3443dc8b93b8b8f05e2400bf3f8d3953b68ca17cfb591ddcbff95bcf8dea3"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.5"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:ee79a06399a02e8d9362c2c6e15c76f64ba38ac1f037f53b2287bf65fd2d2777"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -887,44 +756,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "1",
           "subjectName": "CN=rsa.trivy.test",
           "issuerName": "CN=rsa.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "b30ce6fe46b382b8c51ebde2d107999051f4815e61847a0c9a8a34c1bf701c54"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:FALSE"
-            },
-            {
-              "commonExtensionName": "keyUsage",
-              "commonExtensionValue": "digitalSignature, keyEncipherment"
-            },
-            {
-              "commonExtensionName": "extendedKeyUsage",
-              "commonExtensionValue": "serverAuth, clientAuth"
-            },
-            {
-              "commonExtensionName": "subjectAlternativeName",
-              "commonExtensionValue": "DNS:rsa.trivy.test, email:crypto@trivy.test, IP:127.0.0.1, URI:https://trivy.test/rsa"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.11"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:e3b32ea7cb638d1fa32b65ece44021aeed78fe55833a03b7535ab98c85e3e6e0"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -943,32 +779,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "a",
           "subjectName": "CN=rsa-pss-sha1.trivy.test",
           "issuerName": "CN=rsa-pss-sha1.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "b7b21762568d35512f963def41d804042b3f5d009aa5d78011956d6081992332"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.10"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:d396976662ab6ff083142bdb8e34d188fd09ad4dd12311f11f80119b72733129"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -987,26 +802,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "d",
           "subjectName": "CN=x448.trivy.test",
           "issuerName": "CN=ed448.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "c3c7562d8c32a8d322a625e7e467ba8e35b1c3a91a29f378d538dd14e9c33698"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.3.101.113"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:e959da15e50314231364e31bff026d8277258cbee1b0ee88511fe6a5bd56d840"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -1029,36 +829,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "4",
           "subjectName": "CN=Trivy Crypto Test CA",
           "issuerName": "CN=Trivy Crypto Test CA",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "cce1e82199c1d11d537922a946b51174d8c40074431437f5cfac9c79bd7d68a1"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE, pathlen:0"
-            },
-            {
-              "commonExtensionName": "keyUsage",
-              "commonExtensionValue": "keyCertSign, cRLSign"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.11"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:59c27ebbc5424ebbbb93166fc5e00d8f2bc3c24e7d423d5818f19e8f370b1339"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -1077,32 +852,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "9",
           "subjectName": "CN=ecdsa-sha1.trivy.test",
           "issuerName": "CN=ecdsa-sha1.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "cd2a2edddbc8c8b164c464b3327b184cc684c16a9501c15034b6eebea20b1bb5"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.10045.4.1"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:9c437613e35f5a1c9f55713325b3e16db6754a6553aca2c9352a8a60d954fac3"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -1121,32 +875,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "6",
           "subjectName": "CN=ml-dsa.trivy.test",
           "issuerName": "CN=ml-dsa.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "cfeded381e5fff9837ebbe76a4cd86574ad70f58e47a3926a46cbc7aa33fac1c"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:2.16.840.1.101.3.4.3.18"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:71236366915b2998270138fe360c4cd39eeb48fef7c3fa5d2a1944149c9b51d9"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -1165,32 +898,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "3",
           "subjectName": "CN=ed25519.trivy.test",
           "issuerName": "CN=ed25519.trivy.test",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "f8e9f1e4a1aaf58997366f9e8490c95eff5b094d17b559f46dd1f57f817cc342"
-          },
-          "certificateExtensions": [
-            {
-              "commonExtensionName": "basicConstraints",
-              "commonExtensionValue": "CA:TRUE"
-            }
-          ],
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.3.101.112"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:b408fe9452abc3e3513243b1a50dcbd3fe075346ab924ecd69ecce6a2238a65a"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -1209,26 +921,11 @@
       "cryptoProperties": {
         "assetType": "certificate",
         "certificateProperties": {
-          "serialNumber": "5",
           "subjectName": "CN=leaf.trivy.test",
           "issuerName": "CN=Trivy Crypto Test CA",
           "notValidBefore": "2024-01-01T00:00:00+00:00",
           "notValidAfter": "2034-01-01T00:00:00+00:00",
-          "certificateFormat": "X.509",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "fac9029f4c719711c172e13e01566f1e4d631d024f8bb9cf2de9ae052b15ddee"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.11"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:0e00d68712019b91e6499bc2fad370a9091eb9ebde6f5715b404a749f4e79dac"
-            }
-          ]
+          "certificateFormat": "X.509"
         }
       }
     },
@@ -1247,11 +944,7 @@
       "cryptoProperties": {
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
-          "type": "private-key",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "58493ba35bac946c6d59c3408412fd07cb02dd4344bbf5aae31d71b988b70a0f"
-          }
+          "type": "private-key"
         }
       }
     },
@@ -1270,11 +963,7 @@
       "cryptoProperties": {
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
-          "type": "private-key",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "6087954afb9c1283a4aa085851d925a72431dbc51de920a6022181e402e8fa1a"
-          }
+          "type": "private-key"
         }
       }
     },
@@ -1293,11 +982,7 @@
       "cryptoProperties": {
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
-          "type": "private-key",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "ae83874b02777d57c79a6ac5876138dd104c48f9f7359f23f775a04a2eabb48e"
-          }
+          "type": "private-key"
         }
       }
     },
@@ -1316,11 +1001,7 @@
       "cryptoProperties": {
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
-          "type": "private-key",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "b0e47e22029bf91df335e37ff1598b56d5eb71487520a1817af62fdc519eb2c7"
-          }
+          "type": "private-key"
         }
       }
     },
@@ -1339,11 +1020,7 @@
       "cryptoProperties": {
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
-          "type": "private-key",
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "33c4a55d07866eacf22e834ea182d9eaef9260271a77573d0525c5bba44064ac"
-          }
+          "type": "private-key"
         }
       }
     },
@@ -1363,17 +1040,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "private-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "69b776bd378b3c5ec602916b9e22c83af81abb5b5643f410b0afb60a7d115f35"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D2048"
-            }
-          ]
+          "size": 2048
         }
       }
     },
@@ -1393,21 +1060,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "private-key",
-          "size": 256,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "a9a6c62b03c6d94ba1a3e0d06d0ea119c25d3523759cb10d487df50689075251"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.10045.2.1:curve%3DP-256"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:a9a6c62b03c6d94ba1a3e0d06d0ea119c25d3523759cb10d487df50689075251"
-            }
-          ]
+          "size": 256
         }
       }
     },
@@ -1427,21 +1080,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "private-key",
-          "size": 256,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "b408fe9452abc3e3513243b1a50dcbd3fe075346ab924ecd69ecce6a2238a65a"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.3.101.112"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:b408fe9452abc3e3513243b1a50dcbd3fe075346ab924ecd69ecce6a2238a65a"
-            }
-          ]
+          "size": 256
         }
       }
     },
@@ -1461,21 +1100,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "private-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "e3b32ea7cb638d1fa32b65ece44021aeed78fe55833a03b7535ab98c85e3e6e0"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D2048"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:e3b32ea7cb638d1fa32b65ece44021aeed78fe55833a03b7535ab98c85e3e6e0"
-            }
-          ]
+          "size": 2048
         }
       }
     },
@@ -1499,21 +1124,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "private-key",
-          "size": 1024,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "ee79a06399a02e8d9362c2c6e15c76f64ba38ac1f037f53b2287bf65fd2d2777"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D1024"
-            },
-            {
-              "type": "publicKey",
-              "ref": "crypto:key:public:spki-sha256:ee79a06399a02e8d9362c2c6e15c76f64ba38ac1f037f53b2287bf65fd2d2777"
-            }
-          ]
+          "size": 1024
         }
       }
     },
@@ -1533,17 +1144,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "0e00d68712019b91e6499bc2fad370a9091eb9ebde6f5715b404a749f4e79dac"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D2048"
-            }
-          ]
+          "size": 2048
         }
       }
     },
@@ -1563,17 +1164,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 256,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "3a6846a5fce41f658f2686cab3ee9196338a9d9914616d7f90345979a70db035"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.3.101.110"
-            }
-          ]
+          "size": 256
         }
       }
     },
@@ -1597,17 +1188,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "59c27ebbc5424ebbbb93166fc5e00d8f2bc3c24e7d423d5818f19e8f370b1339"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D2048"
-            }
-          ]
+          "size": 2048
         }
       }
     },
@@ -1627,17 +1208,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "5a16df6acf68dac77c9535924698a01cc45e4eec765c0e95ddad1963c0124b20"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D2048"
-            }
-          ]
+          "size": 2048
         }
       }
     },
@@ -1657,17 +1228,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 15616,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "71236366915b2998270138fe360c4cd39eeb48fef7c3fa5d2a1944149c9b51d9"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:2.16.840.1.101.3.4.3.18"
-            }
-          ]
+          "size": 15616
         }
       }
     },
@@ -1691,17 +1252,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 456,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "7741a6bd8599abd9daee9eff656050a4d9baab43b822c5ee163ab224510ec9af"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.3.101.113"
-            }
-          ]
+          "size": 456
         }
       }
     },
@@ -1721,17 +1272,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 256,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "9c437613e35f5a1c9f55713325b3e16db6754a6553aca2c9352a8a60d954fac3"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.10045.2.1:curve%3DP-256"
-            }
-          ]
+          "size": 256
         }
       }
     },
@@ -1751,17 +1292,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "9effb00691ec209a852669d85442db8beaca2e68e6e976ba63817a971cf77eee"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D2048"
-            }
-          ]
+          "size": 2048
         }
       }
     },
@@ -1793,17 +1324,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 256,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "a9a6c62b03c6d94ba1a3e0d06d0ea119c25d3523759cb10d487df50689075251"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.10045.2.1:curve%3DP-256"
-            }
-          ]
+          "size": 256
         }
       }
     },
@@ -1823,17 +1344,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 256,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "b408fe9452abc3e3513243b1a50dcbd3fe075346ab924ecd69ecce6a2238a65a"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.3.101.112"
-            }
-          ]
+          "size": 256
         }
       }
     },
@@ -1853,17 +1364,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "d396976662ab6ff083142bdb8e34d188fd09ad4dd12311f11f80119b72733129"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D2048"
-            }
-          ]
+          "size": 2048
         }
       }
     },
@@ -1907,17 +1408,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "e3b32ea7cb638d1fa32b65ece44021aeed78fe55833a03b7535ab98c85e3e6e0"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D2048"
-            }
-          ]
+          "size": 2048
         }
       }
     },
@@ -1941,17 +1432,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 448,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "e959da15e50314231364e31bff026d8277258cbee1b0ee88511fe6a5bd56d840"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.3.101.111"
-            }
-          ]
+          "size": 448
         }
       }
     },
@@ -1983,17 +1464,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 1024,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "ee79a06399a02e8d9362c2c6e15c76f64ba38ac1f037f53b2287bf65fd2d2777"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.113549.1.1.1:key-size%3D1024"
-            }
-          ]
+          "size": 1024
         }
       }
     },
@@ -2013,17 +1484,7 @@
         "assetType": "related-crypto-material",
         "relatedCryptoMaterialProperties": {
           "type": "public-key",
-          "size": 2048,
-          "fingerprint": {
-            "alg": "SHA-256",
-            "content": "f6548419aaf2c795a631b2a1de87bf347f49b09a48865f2e803310a41df66026"
-          },
-          "relatedCryptographicAssets": [
-            {
-              "type": "algorithm",
-              "ref": "crypto:algorithm:oid:1.2.840.10040.4.1:key-size%3D2048%2Csubgroup-size%3D224"
-            }
-          ]
+          "size": 2048
         }
       }
     }

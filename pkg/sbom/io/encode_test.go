@@ -1890,6 +1890,47 @@ func TestEncoder_EncodeCryptoAssets(t *testing.T) {
 	}, got.Relationships())
 }
 
+func TestEncoder_EncodeLicenseFindings(t *testing.T) {
+	report := types.Report{
+		SchemaVersion: 2,
+		ArtifactName:  "example:latest",
+		ArtifactType:  ftypes.TypeContainerImage,
+		Results: types.Results{
+			{
+				Target: "example:latest (alpine 3.20)",
+				Class:  types.ClassOSPkg,
+				Type:   ftypes.Alpine,
+				Packages: []ftypes.Package{
+					{
+						ID:      "busybox@1.36.1-r29",
+						Name:    "busybox",
+						Version: "1.36.1-r29",
+					},
+				},
+				Licenses: []types.DetectedLicense{
+					{
+						PkgName: "busybox",
+						Name:    "GPL-2.0-only",
+					},
+				},
+			},
+		},
+	}
+
+	bom, err := sbomio.NewEncoder(sbomio.WithBOMRef()).Encode(report)
+	require.NoError(t, err)
+
+	var found bool
+	for _, component := range bom.Components() {
+		if component.Name != "busybox" {
+			continue
+		}
+		found = true
+		assert.Equal(t, []string{"GPL-2.0-only"}, component.Licenses)
+	}
+	assert.True(t, found)
+}
+
 var (
 	appComponent = &core.Component{
 		Root: true,

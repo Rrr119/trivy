@@ -530,6 +530,10 @@ rego:
 ## Report options
 
 ```yaml
+cyclonedx:
+  # Same as '--cyclonedx-version'
+  version: ""
+
 # Same as '--dependency-tree'
 dependency-tree: false
 
@@ -547,6 +551,10 @@ ignore-policy: ""
 
 # Same as '--ignorefile'
 ignorefile: ".trivyignore"
+
+license:
+  # Same as '--license-policy'
+  policy: []
 
 # Same as '--list-all-pkgs'
 list-all-pkgs: true

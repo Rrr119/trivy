@@ -26,12 +26,45 @@ var ellipticCurves = map[string]string{
 
 // marshalCryptoComponent turns a cryptographic asset into a CycloneDX component.
 func (m *Marshaler) marshalCryptoComponent(component *core.CryptoComponent) cdx.Component {
-	return cdx.Component{
+	c := cdx.Component{
 		BOMRef:           component.BOMRef(),
 		Type:             cdx.ComponentTypeCryptographicAsset,
 		Name:             component.Asset.Name,
 		CryptoProperties: m.cryptoProperties(component.Asset),
 		Evidence:         m.evidence(component.Occurrences),
+	}
+	if m.specVersion < cdx.SpecVersion1_7 {
+		m.trimCryptoProperties(c.CryptoProperties)
+	}
+	return c
+}
+
+// trimCryptoProperties drops fields introduced in CycloneDX 1.7.
+func (*Marshaler) trimCryptoProperties(properties *cdx.CryptoProperties) {
+	if properties == nil {
+		return
+	}
+	if properties.AlgorithmProperties != nil {
+		properties.AlgorithmProperties.AlgorithmFamily = ""
+		properties.AlgorithmProperties.EllipticCurve = ""
+	}
+	if properties.CertificateProperties != nil {
+		certificate := properties.CertificateProperties
+		certificate.SerialNumber = ""
+		certificate.CertificateFileExtension = ""
+		certificate.Fingerprint = nil
+		certificate.CertificateState = nil
+		certificate.CertificateExtensions = nil
+		certificate.RelatedCryptographicAssets = nil
+		certificate.CreationDate = ""
+		certificate.ActivationDate = ""
+		certificate.DeactivationDate = ""
+		certificate.RevocationDate = ""
+		certificate.DestructionDate = ""
+	}
+	if properties.RelatedCryptoMaterialProperties != nil {
+		properties.RelatedCryptoMaterialProperties.Fingerprint = nil
+		properties.RelatedCryptoMaterialProperties.RelatedCryptographicAssets = nil
 	}
 }
 

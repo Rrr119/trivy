@@ -30,6 +30,7 @@ trivy vm [flags] VM_IMAGE
       --compliance string                 compliance report to generate
       --config-file-schemas strings       specify paths to JSON configuration file schemas to determine that a file matches some configuration and pass the schema to Rego checks for type checking
       --custom-headers strings            custom headers in client mode
+      --cyclonedx-version string          CycloneDX specification version (default 1.6) (allowed values: 1.6,1.7)
       --db-repository strings             OCI repository(ies) to retrieve trivy-db in order of priority (default [mirror.gcr.io/aquasec/trivy-db:2,ghcr.io/aquasecurity/trivy-db:2])
       --dependency-tree                   [EXPERIMENTAL] show dependency origin tree of vulnerable packages
       --detection-priority string         specify the detection priority:
@@ -78,6 +79,7 @@ trivy vm [flags] VM_IMAGE
       --ignorefile string                 specify .trivyignore file (empty string disables loading) (default ".trivyignore")
       --include-non-failures              include successes, available with '--scanners misconfig'
       --java-db-repository strings        OCI repository(ies) to retrieve trivy-java-db in order of priority (default [mirror.gcr.io/aquasec/trivy-java-db:1,ghcr.io/aquasecurity/trivy-java-db:1])
+      --license-policy strings            exclude components with the specified license categories or licenses from CycloneDX SBOMs (e.g. forbidden,restricted,GPL-3.0-only)
       --list-all-pkgs                     output all packages in the JSON report regardless of vulnerability (default true)
       --misconfig-scanners strings        comma-separated list of misconfig scanners to use for misconfiguration scanning (default [azure-arm,cloudformation,dockerfile,helm,kubernetes,terraform,terraformplan-json,terraformplan-snapshot,ansible])
       --module-dir string                 specify the directory of the WASM modules to load (default "$HOME/.trivy/modules")

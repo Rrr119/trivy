@@ -370,6 +370,13 @@
         "confidenceLevel": {
           "type": "number",
           "description": "specify license classifier's confidence level"
+        },
+        "policy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "exclude components with the specified license categories or licenses from CycloneDX SBOMs (e.g. forbidden,restricted,GPL-3.0-only)"
         }
       }
     },
@@ -851,6 +858,19 @@
         ]
       },
       "description": "[EXPERIMENTAL] tables that will be displayed in 'table' format"
+    },
+    "cyclonedx": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "CycloneDX specification version (default 1.6)",
+          "enum": [
+            "1.6",
+            "1.7"
+          ]
+        }
+      }
     },
     "repository": {
       "type": "object",

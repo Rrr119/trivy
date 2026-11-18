@@ -126,26 +126,39 @@ var (
 		Values:     xstrings.ToStringSlice(types.SupportedTableModes),
 		Usage:      "[EXPERIMENTAL] tables that will be displayed in 'table' format",
 	}
+	CycloneDXVersionFlag = Flag[string]{
+		Name:       "cyclonedx-version",
+		ConfigName: "cyclonedx.version",
+		Values:     []string{"1.6", "1.7"},
+		Usage:      "CycloneDX specification version (default 1.6)",
+	}
+	LicensePolicyFlag = Flag[[]string]{
+		Name:       "license-policy",
+		ConfigName: "license.policy",
+		Usage:      "exclude components with the specified license categories or licenses from CycloneDX SBOMs (e.g. forbidden,restricted,GPL-3.0-only)",
+	}
 )
 
 // ReportFlagGroup composes common printer flag structs
 // used for commands requiring reporting logic.
 type ReportFlagGroup struct {
-	Format          *Flag[string]
-	ReportFormat    *Flag[string]
-	Template        *Flag[string]
-	DependencyTree  *Flag[bool]
-	ListAllPkgs     *Flag[bool]
-	IgnoreFile      *Flag[string]
-	IgnorePolicy    *Flag[string]
-	ExitCode        *Flag[int]
-	ExitOnEOL       *Flag[int]
-	Output          *Flag[string]
-	OutputPluginArg *Flag[string]
-	Severity        *Flag[[]string]
-	Compliance      *Flag[string]
-	ShowSuppressed  *Flag[bool]
-	TableMode       *Flag[[]string]
+	Format           *Flag[string]
+	ReportFormat     *Flag[string]
+	Template         *Flag[string]
+	DependencyTree   *Flag[bool]
+	ListAllPkgs      *Flag[bool]
+	IgnoreFile       *Flag[string]
+	IgnorePolicy     *Flag[string]
+	ExitCode         *Flag[int]
+	ExitOnEOL        *Flag[int]
+	Output           *Flag[string]
+	OutputPluginArg  *Flag[string]
+	Severity         *Flag[[]string]
+	Compliance       *Flag[string]
+	ShowSuppressed   *Flag[bool]
+	TableMode        *Flag[[]string]
+	CycloneDXVersion *Flag[string]
+	LicensePolicy    *Flag[[]string]
 }
 
 type ReportOptions struct {
@@ -164,25 +177,29 @@ type ReportOptions struct {
 	Compliance       spec.ComplianceSpec
 	ShowSuppressed   bool
 	TableModes       []types.TableMode
+	CycloneDXVersion string
+	LicensePolicy    []string
 }
 
 func NewReportFlagGroup() *ReportFlagGroup {
 	return &ReportFlagGroup{
-		Format:          FormatFlag.Clone(),
-		ReportFormat:    ReportFormatFlag.Clone(),
-		Template:        TemplateFlag.Clone(),
-		DependencyTree:  DependencyTreeFlag.Clone(),
-		ListAllPkgs:     ListAllPkgsFlag.Clone(),
-		IgnoreFile:      IgnoreFileFlag.Clone(),
-		IgnorePolicy:    IgnorePolicyFlag.Clone(),
-		ExitCode:        ExitCodeFlag.Clone(),
-		ExitOnEOL:       ExitOnEOLFlag.Clone(),
-		Output:          OutputFlag.Clone(),
-		OutputPluginArg: OutputPluginArgFlag.Clone(),
-		Severity:        SeverityFlag.Clone(),
-		Compliance:      ComplianceFlag.Clone(),
-		ShowSuppressed:  ShowSuppressedFlag.Clone(),
-		TableMode:       TableModeFlag.Clone(),
+		Format:           FormatFlag.Clone(),
+		ReportFormat:     ReportFormatFlag.Clone(),
+		Template:         TemplateFlag.Clone(),
+		DependencyTree:   DependencyTreeFlag.Clone(),
+		ListAllPkgs:      ListAllPkgsFlag.Clone(),
+		IgnoreFile:       IgnoreFileFlag.Clone(),
+		IgnorePolicy:     IgnorePolicyFlag.Clone(),
+		ExitCode:         ExitCodeFlag.Clone(),
+		ExitOnEOL:        ExitOnEOLFlag.Clone(),
+		Output:           OutputFlag.Clone(),
+		OutputPluginArg:  OutputPluginArgFlag.Clone(),
+		Severity:         SeverityFlag.Clone(),
+		Compliance:       ComplianceFlag.Clone(),
+		ShowSuppressed:   ShowSuppressedFlag.Clone(),
+		TableMode:        TableModeFlag.Clone(),
+		CycloneDXVersion: CycloneDXVersionFlag.Clone(),
+		LicensePolicy:    LicensePolicyFlag.Clone(),
 	}
 }
 
@@ -207,6 +224,8 @@ func (f *ReportFlagGroup) Flags() []Flagger {
 		f.Compliance,
 		f.ShowSuppressed,
 		f.TableMode,
+		f.CycloneDXVersion,
+		f.LicensePolicy,
 	}
 }
 
@@ -290,6 +309,8 @@ func (f *ReportFlagGroup) ToOptions(opts *Options) error {
 		Compliance:       cs,
 		ShowSuppressed:   f.ShowSuppressed.Value(),
 		TableModes:       xstrings.ToTSlice[types.TableMode](tableModes),
+		CycloneDXVersion: f.CycloneDXVersion.Value(),
+		LicensePolicy:    f.LicensePolicy.Value(),
 	}
 	return nil
 }

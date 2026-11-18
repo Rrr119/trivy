@@ -24,6 +24,7 @@ trivy sbom [flags] SBOM_PATH
       --cache-ttl duration             cache TTL when using Redis as cache backend
       --compliance string              compliance report to generate
       --custom-headers strings         custom headers in client mode
+      --cyclonedx-version string       CycloneDX specification version (default 1.6) (allowed values: 1.6,1.7)
       --db-repository strings          OCI repository(ies) to retrieve trivy-db in order of priority (default [mirror.gcr.io/aquasec/trivy-db:2,ghcr.io/aquasecurity/trivy-db:2])
       --detection-priority string      specify the detection priority:
                                          - "precise": Prioritizes precise by minimizing false positives.
@@ -64,6 +65,7 @@ trivy sbom [flags] SBOM_PATH
       --ignored-licenses strings       specify a list of licenses to ignore
       --ignorefile string              specify .trivyignore file (empty string disables loading) (default ".trivyignore")
       --java-db-repository strings     OCI repository(ies) to retrieve trivy-java-db in order of priority (default [mirror.gcr.io/aquasec/trivy-java-db:1,ghcr.io/aquasecurity/trivy-java-db:1])
+      --license-policy strings         exclude components with the specified license categories or licenses from CycloneDX SBOMs (e.g. forbidden,restricted,GPL-3.0-only)
       --list-all-pkgs                  output all packages in the JSON report regardless of vulnerability (default true)
       --no-progress                    suppress progress bar
       --offline-scan                   do not issue API requests to identify dependencies

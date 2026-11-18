@@ -19,6 +19,7 @@ trivy convert [flags] RESULT_JSON
 
 ```
       --compliance string          compliance report to generate
+      --cyclonedx-version string   CycloneDX specification version (default 1.6) (allowed values: 1.6,1.7)
       --dependency-tree            [EXPERIMENTAL] show dependency origin tree of vulnerable packages
       --exit-code int              specify exit code when any security issues are found
       --exit-on-eol int            exit with the specified code when the OS reaches end of service/life
@@ -37,6 +38,7 @@ trivy convert [flags] RESULT_JSON
   -h, --help                       help for convert
       --ignore-policy string       specify the Rego file path to evaluate each vulnerability
       --ignorefile string          specify .trivyignore file (empty string disables loading) (default ".trivyignore")
+      --license-policy strings     exclude components with the specified license categories or licenses from CycloneDX SBOMs (e.g. forbidden,restricted,GPL-3.0-only)
       --list-all-pkgs              output all packages in the JSON report regardless of vulnerability (default true)
   -o, --output string              output file name
       --output-plugin-arg string   [EXPERIMENTAL] output plugin arguments

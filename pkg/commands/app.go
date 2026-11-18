@@ -1022,6 +1022,8 @@ func NewKubernetesCommand(globalFlags *flag.GlobalFlagGroup) *cobra.Command {
 	reportFlagGroup := flag.NewReportFlagGroup()
 	reportFlagGroup.ExitOnEOL = nil // disable '--exit-on-eol'
 	reportFlagGroup.TableMode = nil // disable '--table-mode's
+	reportFlagGroup.CycloneDXVersion = nil
+	reportFlagGroup.LicensePolicy = nil
 	compliance := flag.ComplianceFlag.Clone()
 	var compliances strings.Builder
 	for _, val := range types.BuiltInK8sCompliances {

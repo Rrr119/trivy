@@ -584,7 +584,7 @@ func TestMarshaler_MarshalCryptoAssets(t *testing.T) {
 			ctx := clock.With(t.Context(), time.Date(2021, 8, 25, 12, 20, 30, 5, time.UTC))
 			uuid.SetFakeUUID(t, "3ff14136-e09f-4df9-80ea-%012d")
 
-			marshaler := cyclonedx.NewMarshaler("dev")
+			marshaler := cyclonedx.NewMarshaler("dev", cyclonedx.WithSpecVersion(cdx.SpecVersion1_7))
 			got, err := marshaler.MarshalReport(ctx, cryptoReport(tt.assets))
 			require.NoError(t, err)
 
@@ -663,7 +663,7 @@ func TestMarshaler_MarshalCryptoAssetReferences(t *testing.T) {
 	ctx := clock.With(t.Context(), time.Date(2021, 8, 25, 12, 20, 30, 5, time.UTC))
 	uuid.SetFakeUUID(t, "3ff14136-e09f-4df9-80ea-%012d")
 
-	marshaler := cyclonedx.NewMarshaler("dev")
+	marshaler := cyclonedx.NewMarshaler("dev", cyclonedx.WithSpecVersion(cdx.SpecVersion1_7))
 	got, err := marshaler.MarshalReport(ctx, cryptoReport([]ftypes.CryptoAsset{
 		certificate,
 		signatureAlgorithm,
@@ -701,7 +701,7 @@ func TestMarshaler_MarshalCryptoAssetDependencies(t *testing.T) {
 	ctx := clock.With(t.Context(), time.Date(2021, 8, 25, 12, 20, 30, 5, time.UTC))
 	uuid.SetFakeUUID(t, "3ff14136-e09f-4df9-80ea-%012d")
 
-	marshaler := cyclonedx.NewMarshaler("dev")
+	marshaler := cyclonedx.NewMarshaler("dev", cyclonedx.WithSpecVersion(cdx.SpecVersion1_7))
 	got, err := marshaler.MarshalReport(ctx, cryptoReport([]ftypes.CryptoAsset{
 		cryptotest.CertificateAsset(),
 		cryptotest.AlgorithmAsset(),
@@ -723,6 +723,31 @@ func TestMarshaler_MarshalCryptoAssetDependencies(t *testing.T) {
 		require.NotNil(t, deps, asset.BOMRef)
 		assert.Empty(t, *deps, asset.BOMRef)
 	}
+}
+
+func TestMarshaler_MarshalCryptoAssets_CycloneDX16(t *testing.T) {
+	ctx := clock.With(t.Context(), time.Date(2021, 8, 25, 12, 20, 30, 5, time.UTC))
+	uuid.SetFakeUUID(t, "3ff14136-e09f-4df9-80ea-%012d")
+
+	marshaler := cyclonedx.NewMarshaler("dev")
+	got, err := marshaler.MarshalReport(ctx, cryptoReport([]ftypes.CryptoAsset{
+		cryptotest.CertificateAsset(),
+	}))
+	require.NoError(t, err)
+	require.Equal(t, cdx.SpecVersion1_6, got.SpecVersion)
+
+	assets := lo.Filter(lo.FromPtr(got.Components), func(component cdx.Component, _ int) bool {
+		return component.Type == cdx.ComponentTypeCryptographicAsset
+	})
+	require.Len(t, assets, 1)
+	require.NotNil(t, assets[0].CryptoProperties)
+	require.NotNil(t, assets[0].CryptoProperties.CertificateProperties)
+
+	certificate := assets[0].CryptoProperties.CertificateProperties
+	assert.Empty(t, certificate.SerialNumber)
+	assert.Nil(t, certificate.Fingerprint)
+	assert.Nil(t, certificate.CertificateExtensions)
+	assert.Nil(t, certificate.RelatedCryptographicAssets)
 }
 
 func cryptoReport(assets []ftypes.CryptoAsset) types.Report {

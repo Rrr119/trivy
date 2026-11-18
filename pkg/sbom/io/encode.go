@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/package-url/packageurl-go"
@@ -223,6 +224,17 @@ func (e *Encoder) encodePackages(parent *core.Component, result types.Result) {
 	// Get dependency parents first
 	parents := ftypes.Packages(result.Packages).ParentDeps()
 
+	// License findings can add licenses that are not declared in the package metadata.
+	// Keep them attached to the package component rather than losing the relation between
+	// the dependency and its licenses.
+	licenseFindings := make(map[string][]string)
+	for _, finding := range result.Licenses {
+		if finding.PkgName == "" {
+			continue
+		}
+		licenseFindings[finding.PkgName] = append(licenseFindings[finding.PkgName], finding.Name)
+	}
+
 	// Group vulnerabilities by package ID
 	vulns := make(map[string][]core.Vulnerability)
 	for _, vuln := range result.Vulnerabilities {
@@ -244,6 +256,8 @@ func (e *Encoder) encodePackages(parent *core.Component, result types.Result) {
 		if pkg.Relationship == ftypes.RelationshipRoot {
 			hasRoot = true
 		}
+
+		pkg.Licenses = mergeLicenses(pkg.Licenses, licenseFindings[pkg.Name])
 
 		// Convert packages to components
 		c := e.component(result, pkg)
@@ -597,4 +611,19 @@ func sourcedDigestProperties(digests []digest.SourcedDigest) []core.Property {
 		})
 	}
 	return props
+}
+
+func mergeLicenses(declared, detected []string) []string {
+	licenses := make([]string, 0, len(declared)+len(detected))
+	for _, license := range append(slices.Clone(declared), detected...) {
+		license = strings.TrimSpace(license)
+		if license == "" || slices.Contains(licenses, license) {
+			continue
+		}
+		licenses = append(licenses, license)
+	}
+	if len(licenses) == 0 {
+		return nil
+	}
+	return licenses
 }

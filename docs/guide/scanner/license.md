@@ -160,6 +160,21 @@ Total: 2 (HIGH: 2, CRITICAL: 0)
 
 ```
 
+### Filtering CycloneDX SBOMs by License Policy
+
+When generating a CycloneDX SBOM, `--license-policy` excludes package components whose
+licenses match the policy. Entries can be license categories (`forbidden`, `restricted`,
+`reciprocal`, `notice`, `permissive`, `unencumbered`, `unknown`) or license expressions such
+as `GPL-3.0-only`. Use the `category:` or `license:` prefix when a name is ambiguous.
+
+```shell
+$ trivy image --format cyclonedx --license-policy forbidden,restricted \
+    --output result.cdx alpine:3.20
+```
+
+Packages without a detected license are excluded only when `unknown` is part of the policy.
+The dependency graph is rewritten after filtering, so no removed component is referenced.
+
 ### Configuring Classifier Confidence Level
 You can use the `--license-confidence-level` flag to adjust the confidence level between 0.0 to 1.0 (default 0.9).
 For example, when you run the scanner with the default confidence level on [SPDX license list data](https://github.com/spdx/license-list-data/tree/main/text), it is able to detect only 258 licenses.
