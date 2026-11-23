@@ -185,7 +185,68 @@ func (s Service) ScanTarget(ctx context.Context, target types.ScanTarget, option
 		return nil, ftypes.OS{}, xerrors.Errorf("post scan error: %w", err)
 	}
 
+	// Detectors normally propagate the layer from the source package, but extensions
+	// and third-party detectors may not. Fill any missing layer information from the
+	// scan target so every finding can still be traced back to its image layer.
+	fillVulnerabilityLayers(results, target)
+
 	return results, target.OS, nil
+}
+
+func fillVulnerabilityLayers(results types.Results, target types.ScanTarget) {
+	osPkgLayers := make(map[string]ftypes.Layer)
+	for _, pkg := range target.Packages {
+		if !lo.IsEmpty(pkg.Layer) {
+			osPkgLayers[pkgLayerKey(pkg)] = pkg.Layer
+		}
+	}
+
+	langPkgLayers := make(map[string]ftypes.Layer)
+	allLangPkgLayers := make(map[string]ftypes.Layer)
+	for _, app := range target.Applications {
+		for _, pkg := range app.Packages {
+			if !lo.IsEmpty(pkg.Layer) {
+				key := pkgLayerKey(pkg)
+				langPkgLayers[fmt.Sprintf("%s/%s", app.FilePath, key)] = pkg.Layer
+				allLangPkgLayers[key] = pkg.Layer
+			}
+		}
+	}
+
+	for i := range results {
+		for j := range results[i].Vulnerabilities {
+			vuln := &results[i].Vulnerabilities[j]
+			if !lo.IsEmpty(vuln.Layer) {
+				continue
+			}
+
+			if results[i].Class == types.ClassOSPkg {
+				vuln.Layer = osPkgLayers[pkgLayerKey(ftypes.Package{
+					ID:      vuln.PkgID,
+					Name:    vuln.PkgName,
+					Version: vuln.InstalledVersion,
+				})]
+				continue
+			}
+
+			key := pkgLayerKey(ftypes.Package{
+				ID:      vuln.PkgID,
+				Name:    vuln.PkgName,
+				Version: vuln.InstalledVersion,
+			})
+			vuln.Layer = langPkgLayers[fmt.Sprintf("%s/%s", vuln.PkgPath, key)]
+			if lo.IsEmpty(vuln.Layer) {
+				vuln.Layer = allLangPkgLayers[key]
+			}
+		}
+	}
+}
+
+func pkgLayerKey(pkg ftypes.Package) string {
+	if pkg.ID != "" {
+		return pkg.ID
+	}
+	return fmt.Sprintf("%s@%s", pkg.Name, pkg.Version)
 }
 
 func (s Service) scanVulnerabilities(ctx context.Context, target types.ScanTarget, options types.ScanOptions) (

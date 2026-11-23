@@ -254,6 +254,91 @@ func TestScanner_ScanArtifact(t *testing.T) {
 	}
 }
 
+func TestScanner_ScanArtifact_LayerTraceability(t *testing.T) {
+	_ = dbtest.InitDB(t, []string{"testdata/fixtures/layer-traceability.yaml"})
+	t.Cleanup(func() {
+		_ = db.Close()
+	})
+
+	tests := []struct {
+		name      string
+		imagePath string
+		wantCVE   string
+	}{
+		{
+			name:      "Alpine 3.10",
+			imagePath: "../fanal/test/testdata/alpine-310.tar.gz",
+			wantCVE:   "CVE-2024-31001",
+		},
+		{
+			name:      "Alpine 3.11",
+			imagePath: "../fanal/test/testdata/alpine-311.tar.gz",
+			wantCVE:   "CVE-2024-31101",
+		},
+		{
+			name:      "Debian with application layers",
+			imagePath: "../fanal/test/testdata/vuln-image.tar.gz",
+			wantCVE:   "CVE-2024-9001",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			img, err := image.NewArchiveImage(tt.imagePath)
+			require.NoError(t, err)
+
+			c := cache.NewMemoryCache()
+			art, err := image2.NewArtifact(img, c, artifact.Option{
+				DisabledHandlers: []ftypes.HandlerType{ftypes.UnpackagedPostHandler},
+			})
+			require.NoError(t, err)
+
+			applier := applier.NewApplier(c)
+			scanner := local.NewService(applier, ospkg.NewScanner(), langpkg.NewScanner(),
+				vulnerability.NewClient(db.Config{}))
+			s := scan.NewService(scanner, art)
+
+			report, err := s.ScanArtifact(t.Context(), tTypes.ScanOptions{
+				PkgTypes:         []string{tTypes.PkgTypeOS},
+				PkgRelationships: ftypes.Relationships,
+				Scanners:         tTypes.Scanners{tTypes.VulnerabilityScanner},
+			})
+			require.NoError(t, err)
+			require.NotEmpty(t, report.Metadata.Layers)
+
+			knownLayers := make(map[string]struct{}, len(report.Metadata.Layers))
+			for _, layer := range report.Metadata.Layers {
+				require.NotEmpty(t, layer.DiffID)
+				knownLayers[layer.DiffID] = struct{}{}
+			}
+
+			var detectedCVEs []string
+			for _, result := range report.Results {
+				for _, vuln := range result.Vulnerabilities {
+					detectedCVEs = append(detectedCVEs, vuln.VulnerabilityID)
+
+					require.NotEmpty(t, vuln.Layer.DiffID,
+						"vulnerability %s must be attributed to an image layer", vuln.VulnerabilityID)
+					assert.Contains(t, knownLayers, vuln.Layer.DiffID)
+
+					var sourcePkg *ftypes.Package
+					for i := range result.Packages {
+						if result.Packages[i].ID == vuln.PkgID {
+							sourcePkg = &result.Packages[i]
+							break
+						}
+					}
+					require.NotNil(t, sourcePkg, "source package for %s must be present", vuln.VulnerabilityID)
+					assert.Equal(t, sourcePkg.Layer, vuln.Layer,
+						"vulnerability %s must use the layer of package %s", vuln.VulnerabilityID, vuln.PkgName)
+				}
+			}
+
+			assert.Contains(t, detectedCVEs, tt.wantCVE)
+		})
+	}
+}
+
 func TestService_generateArtifactID(t *testing.T) {
 	tests := []struct {
 		name         string

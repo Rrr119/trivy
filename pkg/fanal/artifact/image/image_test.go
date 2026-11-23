@@ -1,7 +1,9 @@
 package image_test
 
 import (
+	"context"
 	"math/rand"
+	"sync"
 	"testing"
 	"time"
 
@@ -34,6 +36,32 @@ import (
 	_ "github.com/aquasecurity/trivy/pkg/fanal/analyzer/secret"
 	_ "github.com/aquasecurity/trivy/pkg/fanal/handler/sysfile"
 )
+
+type putBlobCountingCache struct {
+	cache.Cache
+
+	mu   sync.Mutex
+	puts int
+}
+
+func (c *putBlobCountingCache) PutBlob(ctx context.Context, blobID string, blobInfo types.BlobInfo) error {
+	c.mu.Lock()
+	c.puts++
+	c.mu.Unlock()
+	return c.Cache.PutBlob(ctx, blobID, blobInfo)
+}
+
+func (c *putBlobCountingCache) PutCount() int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.puts
+}
+
+func (c *putBlobCountingCache) ResetPutCount() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.puts = 0
+}
 
 // Common blob IDs used across multiple test cases to reduce duplication
 const (
@@ -2287,4 +2315,31 @@ func TestArtifact_InspectWithMaxImageSize(t *testing.T) {
 			require.ErrorContains(t, err, tt.wantErr)
 		})
 	}
+}
+
+func TestArtifact_InspectIncremental(t *testing.T) {
+	randomImage, err := random.Image(1024, 3, random.WithSource(rand.NewSource(1)))
+	require.NoError(t, err)
+	img := &fakeImage{Image: randomImage}
+
+	c := &putBlobCountingCache{Cache: cache.NewMemoryCache()}
+	a, err := image2.NewArtifact(img, c, artifact.Option{})
+	require.NoError(t, err)
+
+	first, err := a.Inspect(t.Context())
+	require.NoError(t, err)
+	require.Len(t, first.BlobIDs, 3)
+	assert.Equal(t, 3, c.PutCount())
+
+	// Simulate a new image layer while the first two layers are still cached.
+	require.NoError(t, c.DeleteBlobs(t.Context(), first.BlobIDs[2:]))
+	c.ResetPutCount()
+
+	second, err := a.Inspect(t.Context())
+	require.NoError(t, err)
+
+	assert.Equal(t, 1, c.PutCount())
+	assert.Equal(t, first.ID, second.ID)
+	assert.Equal(t, first.BlobIDs, second.BlobIDs)
+	assert.Equal(t, first.ImageMetadata.DiffIDs, second.ImageMetadata.DiffIDs)
 }

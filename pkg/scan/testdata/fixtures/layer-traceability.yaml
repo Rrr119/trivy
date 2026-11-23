@@ -1,0 +1,35 @@
+- bucket: alpine 3.10
+  pairs:
+    - bucket: musl
+      pairs:
+        - key: CVE-2024-31001
+          value:
+            FixedVersion: 9.9.9-r0
+- bucket: alpine 3.11
+  pairs:
+    - bucket: musl
+      pairs:
+        - key: CVE-2024-31101
+          value:
+            FixedVersion: 9.9.9-r0
+- bucket: debian 9
+  pairs:
+    - bucket: openssl
+      pairs:
+        - key: CVE-2024-9001
+          value:
+            FixedVersion: 9.9.9
+- bucket: vulnerability
+  pairs:
+    - key: CVE-2024-31001
+      value:
+        Title: Alpine 3.10 test vulnerability
+        Severity: HIGH
+    - key: CVE-2024-31101
+      value:
+        Title: Alpine 3.11 test vulnerability
+        Severity: HIGH
+    - key: CVE-2024-9001
+      value:
+        Title: Debian test vulnerability
+        Severity: HIGH

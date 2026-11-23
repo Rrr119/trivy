@@ -132,6 +132,8 @@ func (a Artifact) Inspect(ctx context.Context) (ref artifact.Reference, err erro
 	// Parse histories and extract a list of "created_by"
 	layerKeyMap := a.consolidateCreatedBy(diffIDs, layerKeys, configFile)
 
+	// Incremental image scanning: cached layers are reused and only missing layers
+	// are inspected. The returned BlobIDs always describe the full layer set.
 	missingImage, missingLayers, err := a.cache.MissingBlobs(ctx, imageKey, layerKeys)
 	if err != nil {
 		return artifact.Reference{}, xerrors.Errorf("unable to get missing layers: %w", err)

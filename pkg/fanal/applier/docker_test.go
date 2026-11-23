@@ -7,6 +7,7 @@ import (
 
 	"github.com/package-url/packageurl-go"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/aquasecurity/trivy/internal/cryptotest"
 	"github.com/aquasecurity/trivy/pkg/fanal/applier"
@@ -1823,4 +1824,87 @@ func TestApplyLayers(t *testing.T) {
 			assert.Equal(t, tt.want, got, tt.name)
 		})
 	}
+}
+
+func TestApplyLayers_OriginLayerForPackages(t *testing.T) {
+	bottomLayer := types.Layer{
+		Digest: "sha256:bottom",
+		DiffID: "sha256:bottom-diff",
+	}
+	topLayer := types.Layer{
+		Digest: "sha256:top",
+		DiffID: "sha256:top-diff",
+	}
+
+	got := applier.ApplyLayers([]types.BlobInfo{
+		{
+			SchemaVersion: types.BlobJSONSchemaVersion,
+			Digest:        bottomLayer.Digest,
+			DiffID:        bottomLayer.DiffID,
+			PackageInfos: []types.PackageInfo{
+				{
+					FilePath: "var/lib/dpkg/status.d/openssl",
+					Packages: types.Packages{
+						{
+							ID:             "openssl@1.1.1",
+							Name:           "openssl",
+							Version:        "1.1.1",
+							InstalledFiles: []string{"usr/bin/openssl"},
+						},
+					},
+				},
+			},
+			Applications: []types.Application{
+				{
+					Type:     types.Composer,
+					FilePath: "app/composer.lock",
+					Packages: types.Packages{
+						{
+							ID:      "guzzlehttp/guzzle@6.2.0",
+							Name:    "guzzlehttp/guzzle",
+							Version: "6.2.0",
+						},
+					},
+				},
+			},
+		},
+		{
+			SchemaVersion: types.BlobJSONSchemaVersion,
+			Digest:        topLayer.Digest,
+			DiffID:        topLayer.DiffID,
+			PackageInfos: []types.PackageInfo{
+				{
+					FilePath: "var/lib/dpkg/status.d/openssl",
+					Packages: types.Packages{
+						{
+							ID:      "openssl@1.1.1",
+							Name:    "openssl",
+							Version: "1.1.1",
+						},
+					},
+				},
+			},
+			Applications: []types.Application{
+				{
+					Type:     types.Composer,
+					FilePath: "app/composer.lock",
+					Packages: types.Packages{
+						{
+							ID:      "guzzlehttp/guzzle@6.2.0",
+							Name:    "guzzlehttp/guzzle",
+							Version: "6.2.0",
+						},
+					},
+				},
+			},
+		},
+	})
+
+	require.Len(t, got.Packages, 1)
+	assert.Equal(t, bottomLayer, got.Packages[0].Layer)
+	assert.Equal(t, []string{"usr/bin/openssl"}, got.Packages[0].InstalledFiles)
+
+	require.Len(t, got.Applications, 1)
+	require.Len(t, got.Applications[0].Packages, 1)
+	assert.Equal(t, bottomLayer, got.Applications[0].Packages[0].Layer)
 }

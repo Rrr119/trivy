@@ -1,0 +1,17 @@
+{
+  "root": "/home/dev/feedback/uid36772",
+  "B": "/home/dev/feedback/uid36772",
+  "sha": "75fd8c40b98d9012797bf061e96c1bb724197831",
+  "wslDistro": "Ubuntu-26.04",
+  "source": {
+    "owner": "aquasecurity",
+    "repo": "trivy",
+    "sha": "75fd8c40b98d9012797bf061e96c1bb724197831"
+  },
+  "fork": {
+    "owner": "Rrr119",
+    "repo": "trivy",
+    "cloneUrl": "https://github.com/Rrr119/trivy.git"
+  },
+  "at": "2026-11-23T17:05:06.788Z"
+}
